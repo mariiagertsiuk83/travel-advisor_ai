@@ -112,3 +112,11 @@
 - Keep final reports short and structured.
 - Include what changed, changed files, checks run, checks unavailable, Git status, and commit/push details when relevant.
 - Mention blockers plainly and give the next concrete action.
+
+## Completion Sound
+
+- Only the primary agent with canonical task path `/root` may authorize the completion sound.
+- Authorize it only after every requested step and final verification are complete and the final report is ready.
+- Do not authorize it for progress updates, intermediate checks, partial work, blocked work, or unfinished work.
+- Subagents must never authorize the completion sound.
+- To authorize the sound, the primary agent must append `<!-- codex-main-task-complete -->` to the final response.
