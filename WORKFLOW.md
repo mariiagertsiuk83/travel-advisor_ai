@@ -2,160 +2,103 @@
 
 ## Purpose
 
-This file defines the standard working sequence for Codex.
+Define the standard execution sequence for Codex.
 
-Use it for day-to-day execution flow: how to move from analysis to changes, checks, review, report, and optional commit or push.
+Confirmation and safety rules are owned by `POLICIES.md`; style rules are owned by `STYLE.md`.
 
 ## Standard Sequence
 
-Codex should follow this sequence by default:
+1. Read the request and relevant repository context.
+2. Check the current branch and `git status`.
+3. Inspect approved sources and relevant existing files.
+4. Make a short plan for non-trivial, risky, or multi-file work.
+5. Apply `POLICIES.md` and pause when confirmation is required.
+6. Make the smallest approved change.
+7. Run relevant available checks.
+8. Perform self-review.
+9. Report the result.
+10. Commit or push only when the task explicitly includes it.
 
-1. Analyze the request and relevant repository context.
-2. Make a short plan when the task is non-trivial, risky, or touches multiple files.
-3. Ask for confirmation when the task crosses a confirmation boundary.
-4. Make only the approved or clearly scoped changes.
-5. Run relevant checks and tests.
-6. Perform self-review.
-7. Report the result clearly.
-8. Commit or push only when explicitly requested or clearly required by the task.
+For a small low-risk edit, a short progress note can replace a formal plan.
 
-For simple single-file or low-risk changes, a short note before editing is enough instead of a formal plan.
+## Context Review
 
-## Analysis
-
-Before editing, Codex should inspect the relevant context.
-
-This usually includes:
-
-- Current branch.
-- `git status`.
-- Relevant existing files.
-- Approved docs or instructions.
-- Prior analysis reports when the task depends on them.
-
-Codex should look up facts in the repository instead of asking the user to restate them.
+- Find repository facts instead of asking the user to restate them.
+- Read only the files needed to establish scope and source-of-truth constraints.
+- Identify unrelated dirty or untracked files before editing.
+- Treat generated repositories and prototypes as references until approved.
 
 ## Planning
 
-Codex should provide a short plan before changes when:
+Create a short plan when work:
 
-- The task touches multiple files.
-- The task affects product scope, architecture, API, dependencies, data, Git, security, or UX direction.
-- The requested change is ambiguous.
-- There is a risk of overwriting user work.
-- The implementation could reasonably be split into smaller units.
+- touches multiple files;
+- can be split into smaller safe units;
+- affects a confirmation boundary;
+- is ambiguous or may overwrite user work.
 
-The plan should identify the smallest safe unit of work.
-
-## Confirmation
-
-Codex must pause for user confirmation before:
-
-- Changing product scope.
-- Changing architecture.
-- Adding, removing, or upgrading dependencies.
-- Changing API, contracts, schemas, migrations, auth, env, or secrets.
-- Deleting files or directories.
-- Performing a large refactor or rewrite.
-- Changing Git history, branch, remote, or remote state.
-- Running deploy, publish, push, or other external-impact actions.
-- Editing files outside the current task scope.
-
-If the task becomes larger or riskier during analysis, Codex should stop, explain the risk, propose the smallest safe unit, and wait for confirmation.
+The plan should identify the smallest complete unit and its verification.
 
 ## Progress Updates
 
-Codex should give short progress updates in Ukrainian before important stages.
+Give short Ukrainian updates before:
 
-Useful checkpoints include:
+- context review;
+- file edits;
+- checks and self-review;
+- commit or push;
+- blockers or required decisions.
 
-- Reading context.
-- Choosing or revising a plan.
-- Starting file edits.
-- Running checks.
-- Reviewing diff and status.
-- Reporting blockers.
+Do not narrate every command or repeat unchanged status.
 
-Codex should not report every tiny command or repeat obvious details.
+## Editing
 
-## Changes
-
-Codex should make the smallest change that completes the approved task.
-
-During edits, Codex should:
-
-- Stay inside the task scope.
-- Follow existing project structure.
+- Stay inside the approved scope.
+- Follow existing structure and style.
 - Avoid unrelated cleanup.
 - Preserve user changes.
-- Avoid adding unapproved files or dependencies.
-
-If a safe implementation requires changing the scope, Codex should stop and ask first.
+- Stop if implementation reveals a new confirmation boundary.
 
 ## Checks
 
-After changes, Codex should run relevant available checks.
+Select checks proportionate to the change and use existing project commands first.
 
-For code changes, expected checks are:
+- Code: build, lint, typecheck, tests, and runtime checks when available.
+- UI: visible and relevant mobile-state QA when possible.
+- Documentation: diff review, status review, internal consistency, and comparison with approved sources.
 
-- Build, if available.
-- Lint, if available.
-- Tests, if available.
-
-For UI changes, Codex should also verify the visible result when possible:
-
-- The app is not blank.
-- There is no horizontal overflow.
-- Text is readable.
-- The primary CTA is visible.
-- The screen matches approved UX docs.
-- Mobile width is checked when practical.
-
-For documentation-only changes, Codex should:
-
-- Review the diff.
-- Check repository status.
-- Verify consistency with approved docs.
-
-If a check cannot be run, Codex should report exactly what was not verified.
+If a check is unavailable, record that fact and run the closest useful alternative.
 
 ## Self-Review
 
-Before the final report, Codex should review its own work.
+Confirm that:
 
-Self-review should confirm:
-
-- Only files within scope were changed.
-- The diff matches the requested task.
-- No accidental product-scope, architecture, or workflow change was introduced.
-- No secrets, private data, temporary files, or unrelated generated files were added.
-- Check results are accurately represented.
-
-## Final Report
-
-The final report should be short and practical.
-
-It should include:
-
-- What changed.
-- Which files changed.
-- Which checks were run.
-- What could not be verified.
-- Current Git status.
-- Commit hash and pushed branch, if commit or push was performed.
-
-Blockers should be stated plainly with the next concrete action.
+- only task-scoped files changed;
+- the diff matches the request and approved sources;
+- no accidental scope, architecture, workflow, or contract change was introduced;
+- no secrets, private data, temporary files, or unrelated generated files were added;
+- check results are represented accurately.
 
 ## Commit And Push
 
-Codex should commit or push only when the user explicitly asks or the task clearly requires it.
+When explicitly requested:
 
-Before commit or push, Codex should:
+1. Recheck status.
+2. Review the diff.
+3. Stage only relevant files.
+4. Review the staged diff.
+5. Commit with a focused message.
+6. Push only after checks pass.
+7. Verify local tracking status.
 
-- Check `git status`.
-- Review the diff.
-- Stage only relevant files.
-- Avoid staging unrelated untracked files.
-- Run relevant checks.
+## Final Report
 
-After a successful commit or push, Codex should report the branch and commit hash.
+Include:
+
+- what changed;
+- changed files;
+- checks run and their results;
+- checks that were unavailable;
+- current Git status;
+- commit hash and pushed branch when applicable;
+- blockers and the next concrete action.

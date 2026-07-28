@@ -2,137 +2,72 @@
 
 ## Purpose
 
-This file defines project-wide working policies for Codex.
+Define non-negotiable confirmation, safety, evidence, Git, and security policies for Codex.
 
-These rules cover confirmation boundaries, safe change control, testing expectations, Git behavior, and secret handling. Style preferences belong in `STYLE.md`; day-to-day workflow details belong in a separate workflow document if one exists.
+Execution order belongs in `WORKFLOW.md`; style belongs in `STYLE.md`.
 
-## Changes Requiring Confirmation
+## Confirmation Boundaries
 
-Codex must ask for explicit confirmation before:
+Obtain explicit confirmation before:
 
-- Deleting files or directories, except temporary files created by Codex during the current task.
-- Performing large rewrites, broad refactors, or structural reorganization.
-- Changing public APIs, contracts, data schemas, migrations, authentication, authorization, or environment configuration.
-- Adding, removing, or upgrading dependencies.
-- Changing `.gitignore`.
-- Running destructive Git commands.
-- Changing branches, remotes, or repository history.
-- Pushing, deploying, publishing, or making remote changes.
-- Editing files outside the current task scope.
+- changing product scope, architecture, UX direction, public APIs, contracts, schemas, migrations, authentication, authorization, environment configuration, or secrets;
+- adding, removing, or upgrading dependencies;
+- deleting files or directories other than temporary files created during the current task;
+- changing `.gitignore`;
+- performing large rewrites, broad refactors, or structural reorganizations;
+- changing Git branches, remotes, history, or remote state;
+- pushing, deploying, publishing, or running other external-impact actions;
+- editing outside the current task scope.
 
-## Large Rewrite Policy
+If a task expands across one of these boundaries, stop, explain the impact, and propose the smallest safe unit.
 
-Large rewrites and broad refactors are not allowed as incidental cleanup.
+## Change Safety
 
-They are allowed only when:
-
-- The user explicitly asks for a rewrite or refactor.
-- The scope is clear before edits begin.
-- Codex provides a short plan before changing files.
-- Existing user changes are protected from overwrite.
-
-If a task can be completed with a small focused change, Codex must prefer that path.
-
-## API And Contract Policy
-
-API, type, route, integration, and data-contract changes require justification before implementation.
-
-Before changing a contract, Codex must:
-
-- Find relevant call sites and usages.
-- Identify likely compatibility impact.
+- Prefer focused changes over incidental cleanup.
+- Preserve existing user work and unrelated dirty or untracked files.
+- Verify exact paths, references, tracking state, and task scope before deletion.
+- Do not use destructive Git commands such as `git reset --hard`.
+- Do not force-push to `main`.
+- Do not change contracts without reviewing call sites and compatibility impact.
 - Preserve backward compatibility when practical.
-- Update related docs, types, and tests when they exist.
 
-Breaking changes require explicit user confirmation.
+## Dependencies And Data
 
-## Dependency Policy
+- Explain why a dependency is needed, what lighter alternatives exist, and its expected maintenance or runtime impact before requesting approval.
+- Do not modify schemas, migrations, seed data, persisted formats, or demo data unless the approved task requires it.
+- Label prototype, sample, fake, or hardcoded data clearly.
+- Do not treat generated data as product truth.
 
-Dependencies must not be added, removed, or upgraded without explicit approval.
+## Evidence
 
-Before proposing a dependency change, Codex must explain:
+- Code behavior changes require relevant available build, lint, typecheck, tests, and runtime checks.
+- UI changes require visible QA when possible.
+- Documentation-only changes require diff review, repository status review, and consistency checks against approved sources.
+- Do not claim successful behavior, accessibility, quality, deployment, or release readiness without evidence.
+- Report unavailable or failed checks exactly.
 
-- Why the dependency is needed.
-- What lighter alternatives were considered.
-- Expected impact on build, bundle size, runtime, or maintenance.
+## Git
 
-After an approved dependency change, Codex must run the relevant install, build, lint, and test checks when available.
+- Check the branch and status before editing and before commit/push.
+- Stage only task-relevant files.
+- Review the staged diff before committing.
+- Commit and push only when explicitly requested or clearly included in the task.
+- Push only after relevant checks pass and a remote is configured.
+- Report the commit hash and pushed branch after success.
 
-## Data And Migration Policy
+## Secrets And Private Data
 
-Codex must not change schemas, migrations, seed data, persisted data formats, or demo data unless the task explicitly requires it.
-
-Prototype or hardcoded data must not be treated as real product data without user confirmation.
-
-Demo, sample, or fake data must be clearly marked as such.
-
-## File Deletion Policy
-
-Before deleting a file, Codex must verify:
-
-- The exact path.
-- Whether the file is tracked or untracked.
-- Whether the file is referenced elsewhere.
-- Whether the deletion is inside the approved task scope.
-
-Codex must not delete user files, product docs, generated artifacts, or unrelated clutter merely for cleanup.
-
-## Testing And Evidence Policy
-
-Code behavior changes require relevant available checks before completion.
-
-Expected checks include:
-
-- Build, when available.
-- Lint, when available.
-- Tests, when available.
-- Runtime or browser-visible QA for UI changes when possible.
-
-Documentation-only changes require:
-
-- Reviewing the diff.
-- Checking repository status.
-- Verifying consistency with approved docs.
-
-Codex must not claim that behavior, quality, accessibility, or deployment succeeded without evidence. If a check is unavailable or cannot be run, Codex must say so clearly.
-
-## Git Policy
-
-Codex must not change Git history, branches, remotes, or remote state without confirmation.
-
-Codex must:
-
-- Check branch and status before edits.
-- Stage only files relevant to the current task.
-- Avoid staging unrelated untracked files.
-- Avoid committing temporary files, secrets, private data, or generated clutter.
-- Commit and push only when explicitly requested or clearly required by the task.
-- Never force-push to `main`.
-
-When a commit or push succeeds, Codex must report the branch and commit hash.
-
-## Security And Secrets Policy
-
-Codex must not read, print, edit, document, or commit secrets unless the user explicitly asks and the action is necessary.
-
-Secrets include:
-
-- API keys.
-- Tokens.
-- Passwords.
-- Credentials.
-- Private keys.
-- Session values.
-- Personal or private data.
-
-If a secret appears unexpectedly in a file, diff, log, terminal output, or generated content, Codex must stop, report that a secret was found, and avoid copying the secret value into the response.
+- Do not read, print, edit, document, or commit secrets unless explicitly requested and necessary.
+- Never copy secret values into responses, examples, docs, commands, or logs.
+- Do not commit credentials, tokens, passwords, private keys, session values, personal contacts, or private data.
+- If a secret appears unexpectedly, stop, report its presence without reproducing it, and avoid further exposure.
 
 ## Stop Conditions
 
-Codex must stop and ask before continuing when:
+Stop and ask before continuing when:
 
-- The requested change conflicts with approved docs or explicit user decisions.
-- The scope becomes larger than the approved task.
-- A safe implementation requires a dependency, migration, destructive command, deploy, push, or remote change that was not approved.
-- Existing user changes could be overwritten.
-- Required source information is missing and guessing would affect product scope, architecture, security, or data integrity.
+- the requested change conflicts with approved sources or explicit decisions;
+- the scope becomes larger or riskier than approved;
+- safe completion needs an unapproved confirmation-boundary action;
+- existing user work may be overwritten;
+- missing information would require guessing about scope, architecture, security, contracts, or data integrity.
