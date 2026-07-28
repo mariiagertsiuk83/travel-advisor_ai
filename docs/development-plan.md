@@ -74,11 +74,32 @@ No application code exists yet. The future codebase should include Expo-compatib
   - Data-shape review against `docs/architecture.md`.
   - Open-question review before treating route data as real.
 
-### Unit 4: Route Results Screen
+### Unit 4: RouteCard Component Contract
+
+- `Purpose`: Define the reusable route comparison card contract before implementing the Route Results screen.
+- `Source References`: `docs/prd.md`, `docs/screen-map.md`, `docs/wireframes.md`, `docs/design-brief.md`, Figma Make draft analysis
+- `Depends On`: Unit 3
+- `Work Items`:
+  - Define a small reusable RouteCard component for React Native + Expo, not a direct copy of the Figma Make Vite component.
+  - Use the source-backed fields: route category, duration, estimated cost or "check price", transfer count, transport types, route note, and select action.
+  - Preserve the Figma Make layout idea of a clear category badge, compact metric cells, transport chips, and a visible "View details" action.
+  - Keep visual styling tied to `docs/design-brief.md` tokens and calm practical utility direction.
+  - Treat all route values as presentation input; do not embed hardcoded route data in the component.
+- `Acceptance Checks`:
+  - The component can represent cheapest, fastest, and balanced route categories.
+  - The component supports unavailable pricing through "check price" without implying live-price guarantees.
+  - The component opens Route Guidance through selection and does not imply checkout or booking.
+  - The component does not depend on Figma Make web-only CSS, hover behavior, prototype toolbar state, or Vite-specific structure.
+- `Verification`:
+  - Contract review against `docs/prd.md` route-card requirements.
+  - Visual and interaction review against `docs/wireframes.md` and `docs/design-brief.md`.
+  - Scope review to confirm no ticket-service URLs, ROUTEX name, hardcoded route data, account UI, or booking UI were introduced.
+
+### Unit 5: Route Results Screen
 
 - `Purpose`: Show 2-3 scannable route cards.
 - `Source References`: `docs/prd.md`, `docs/screen-map.md`, `docs/wireframes.md`, `docs/design-brief.md`
-- `Depends On`: Units 1 and 3
+- `Depends On`: Units 1, 3, and 4
 - `Work Items`:
   - Implement route-card list.
   - Implement category, duration, cost/check-price, transfers, and transport-type display.
@@ -91,11 +112,11 @@ No application code exists yet. The future codebase should include Expo-compatib
   - QA route-card checks.
   - Visual review against design brief.
 
-### Unit 5: Route Guidance Screen
+### Unit 6: Route Guidance Screen
 
 - `Purpose`: Help the user continue ticket verification outside the app.
 - `Source References`: `docs/prd.md`, `docs/user-journey.md`, `docs/screen-map.md`, `docs/wireframes.md`
-- `Depends On`: Units 1, 3, and 4
+- `Depends On`: Units 1, 3, 4, and 5
 - `Work Items`:
   - Implement selected-route summary.
   - Implement practical tips.
@@ -109,11 +130,11 @@ No application code exists yet. The future codebase should include Expo-compatib
   - QA checks for link behavior and reminder wording.
   - Scope review against out-of-scope list.
 
-### Unit 6: Localization
+### Unit 7: Localization
 
 - `Purpose`: Support Ukrainian and English interfaces.
 - `Source References`: `docs/prd.md`, `docs/design-brief.md`
-- `Depends On`: Units 1-5
+- `Depends On`: Units 1-6
 - `Work Items`:
   - Add Ukrainian and English copy structure.
   - Verify layout tolerates both languages.
@@ -124,11 +145,11 @@ No application code exists yet. The future codebase should include Expo-compatib
   - Language path walkthrough.
   - Visual regression review for copy length.
 
-### Unit 7: Verification And Evidence
+### Unit 8: Verification And Evidence
 
 - `Purpose`: Establish evidence for Done.
 - `Source References`: `docs/dod-evals.md`, `docs/qa-checklist.md`, `docs/guardrails.md`
-- `Depends On`: Units 1-6
+- `Depends On`: Units 1-7
 - `Work Items`:
   - Add or document available build/run/test commands once implementation exists.
   - Capture walkthrough evidence for the main journey.
@@ -145,10 +166,11 @@ No application code exists yet. The future codebase should include Expo-compatib
 1. Expo App Foundation
 2. Route Search Screen
 3. Route Option Model And MVP Route Logic
-4. Route Results Screen
-5. Route Guidance Screen
-6. Localization
-7. Verification And Evidence
+4. RouteCard Component Contract
+5. Route Results Screen
+6. Route Guidance Screen
+7. Localization
+8. Verification And Evidence
 
 ## Verification Plan
 
@@ -167,6 +189,7 @@ Verify that the implemented UI follows the calm practical travel utility directi
 - External services and official sources must be chosen before final link behavior can be verified.
 - Optional return routing may increase scope and should remain controlled.
 - Verification tooling cannot be finalized until the Expo app exists.
+- Figma Make confirms useful RouteCard hierarchy and metric patterns, but its generated Vite/React code, prototype toolbar, hardcoded route data, ticket-service names, ROUTEX branding, and dark-neon token set must not be transferred directly into the React Native + Expo app without separate approval.
 
 ## Out Of Scope
 
